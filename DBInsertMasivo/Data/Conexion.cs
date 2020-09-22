@@ -23,6 +23,7 @@ namespace DBInsertMasivo.Data
                     using (var bcp = new SqlBulkCopy(connectionString))
                     using (var reader = ObjectReader.Create(Lista, "Ruc", "Nombre"))
                     {
+                        bcp.BulkCopyTimeout = 3000;
                         bcp.DestinationTableName = "cp_proveedor_microempresa";
                         bcp.WriteToServer(reader);
                     }
@@ -104,11 +105,17 @@ namespace DBInsertMasivo.Data
         }
         private static string GetConnectionString()
         {
+            
+            string ip = "fixed.database.windows.net";
+            string password = "admin*2016";
+            string user = "administrador";
+            string InitialCatalog = "AgricolaYTransporte";
+            /*
             string ip = "192.168.50.8";
             string password = "@dmin*2015.12";
             string user = "sa";
             string InitialCatalog = "DBERP_NAT_PROD";
-
+            */
             return "data source=" + ip + ";initial catalog=" + InitialCatalog + ";user id=" + user + ";password=" + password + ";MultipleActiveResultSets=True;";
         }
     }

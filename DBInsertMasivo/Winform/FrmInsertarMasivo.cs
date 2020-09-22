@@ -50,10 +50,12 @@ namespace DBInsertMasivo.Winform
                 Lista = new List<cp_proveedor_microempresa>();
                 string fileName = txtRuta.Text;
                 var workbook = new XLWorkbook(fileName);
-                var ws1 = workbook.Worksheet(2);
-                int Cantidad = ws1.RowCount();
+                var ws1 = workbook.Worksheet(1);
+                //var ws2 = workbook.Worksheet(2);
+                int CantidadHoja1 = ws1.RowCount();
+                //int CantidadHoja2 = ws2.RowCount();
                 int CantidadFinal = 0;
-                for (int i = 0; i < Cantidad; i++)
+                for (int i = 0; i < CantidadHoja1; i++)
                 {
                     if (!ws1.Row(i + 1).IsEmpty())
                     {
@@ -62,20 +64,54 @@ namespace DBInsertMasivo.Winform
                     else
                         break;
                 }
+                /*
+                for (int i = 0; i < CantidadHoja2; i++)
+                {
+                    if (!ws2.Row(i + 1).IsEmpty())
+                    {
+                        CantidadFinal++;
+                    }
+                    else
+                        break;
+                }
+                */
                 pbProceso.Properties.Maximum = CantidadFinal;
                 pbProceso.Properties.Step = 1;
                 pbProceso.EditValue = 0;
                 pbProceso.Properties.Minimum = 1;
                 pbProceso.Properties.PercentView = true;
 
-                for (int i = 0; i < Cantidad; i++)
+                for (int i = 0; i < CantidadHoja1; i++)
                 {
                     if (!ws1.Row(i + 1).IsEmpty())
                     {
+                        if (ws1.Cell(i + 1, 3).Value.ToString() == "X")
+                        {
+                            Lista.Add(new cp_proveedor_microempresa
+                            {
+                                Ruc = ws1.Cell(i + 1, 1).Value.ToString(),
+                                Nombre = ws1.Cell(i + 1, 2).Value.ToString()
+                            });
+                        }   
+                        
+                        pbProceso.PerformStep();
+                        pbProceso.Update();
+                        gcDetalle.DataSource = Lista;
+                        gcDetalle.RefreshDataSource();
+                        Application.DoEvents();
+                    }
+                    else
+                        break;
+                }
+                /*
+                for (int i = 0; i < CantidadHoja2; i++)
+                {
+                    if (!ws2.Row(i + 1).IsEmpty())
+                    {
                         Lista.Add(new cp_proveedor_microempresa
                         {
-                            Ruc = ws1.Cell(i + 1, 1).Value.ToString(),
-                            Nombre = ws1.Cell(i + 1, 2).Value.ToString()
+                            Ruc = ws2.Cell(i + 1, 1).Value.ToString(),
+                            Nombre = ws2.Cell(i + 1, 2).Value.ToString()
                         });
 
                         pbProceso.PerformStep();
@@ -86,7 +122,8 @@ namespace DBInsertMasivo.Winform
                     }
                     else
                         break;
-                }
+                }*/
+
                 gcDetalle.DataSource = Lista;
                 MessageBox.Show(Lista.Count.ToString());
             }
@@ -150,6 +187,8 @@ namespace DBInsertMasivo.Winform
                 {
                     Lista.RemoveAll(q => q.Ruc == item.Ruc);
                 }
+                gcDetalle.DataSource = Lista;
+                gcDetalle.RefreshDataSource();
 
             }
             catch (Exception ex)
