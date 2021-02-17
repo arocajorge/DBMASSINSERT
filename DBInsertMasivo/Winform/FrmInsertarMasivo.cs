@@ -85,14 +85,15 @@ namespace DBInsertMasivo.Winform
                 {
                     if (!ws1.Row(i + 1).IsEmpty())
                     {
+                        /*
                         if (ws1.Cell(i + 1, 3).Value.ToString() == "X")
-                        {
+                        {*/
                             Lista.Add(new cp_proveedor_microempresa
                             {
                                 Ruc = ws1.Cell(i + 1, 1).Value.ToString(),
                                 Nombre = ws1.Cell(i + 1, 2).Value.ToString()
                             });
-                        }   
+                        //}   
                         
                         pbProceso.PerformStep();
                         pbProceso.Update();
